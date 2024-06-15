@@ -15,7 +15,7 @@ export default function CongressList({ selectedIssue }) {
 
     const fetchChatGPTSenators = async (issue) => {
         const apiKey = import.meta.env.VITE_OPENAI_API_KEY;
-        const prompt = `List three US senators who work closely with ${issue} via bills and other political activities. Provide names('FIRST LAST' only), and a short description (description is two sentences). ONLY output a JSON file in the format [{"name": <>, "description":<>}, etc]`;
+        const prompt = `List three US senators who work closely with ${issue} via bills and other political activities. Provide names('First Name Last Name' ONLY), and a short description (description is two sentences). ONLY output a JSON file in the format [{"name": <>, "description":<>}, etc]`;
  
         const response = await fetch('https://api.openai.com/v1/chat/completions', {
             method: 'POST',
@@ -43,6 +43,8 @@ export default function CongressList({ selectedIssue }) {
 
         const validText = ensureValidJson(rawText.trim());
 
+        console.log("Valid text:", validText); //debug
+
         const senatorsData = parseChatGPTResponse(validText);
         return senatorsData;
         
@@ -50,10 +52,25 @@ export default function CongressList({ selectedIssue }) {
 
 
     const ensureValidJson = (text) => {
-        return text
-            .replace(/```json\n/g, '')  // remove beginning block markdown
-            .replace(/```/g, '') // remove end block markdown
-            .trim(); 
+            // Remove any leading or trailing ```json and ``` if they exist
+            text = text.replace(/```json/g, '').replace(/```/g, '').trim();
+            // Remove any leading or trailing ``` and extra line breaks
+            text = text.replace(/```\n/g, '').replace(/\n```/g, '').trim();
+
+            // Remove any escape characters that might cause JSON.parse to fail
+            text = text.replace(/\\n/g, '').replace(/\\t/g, '').trim();
+
+            // Remove trailing commas before the closing bracket
+            text = text.replace(/,\s*([\]}])/g, '$1');
+
+            // Try to ensure it starts with [ and ends with ] for a valid JSON array
+            if (!text.startsWith('[')) {
+                text = '[' + text;
+            }
+            if (!text.endsWith(']')) {
+                text = text + ']';
+            }
+            return text;
     };
 
 

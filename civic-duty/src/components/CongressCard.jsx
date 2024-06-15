@@ -12,40 +12,55 @@ export default function CongressCard({ senator }) {
   const [imgURL, setImageUrl] = useState('');
 
   useEffect(() => {
-    const fetchImage = async () => {
+    const fetchImages = async () => {
       try {
         // const response = await axios.get('https://www.congress.gov/members?q=%7B%22congress%22%3A118%7D'); no access womp womp
-        const response = await axios.get('http://localhost:3000/local-file');
-        const html = response.data;
-        const $ = cheerio.load(html);
+        const response = await axios.get('http://localhost:3000/local-files');
+        const { data1, data2, data3 } = response.data;
+
+        const htmlData = [data1, data2, data3];
         const nameParts = senator.name.split(" ");
         let rearrangedName = `${nameParts[1]}, ${nameParts[0]}`; //changes from First Last to Last, First
+        console.log(rearrangedName);
+        rearrangedName = rearrangedName.replace("Bob", "Robert");
+        rearrangedName = rearrangedName.replace("Tom", "Thomas"); //nicknames wow
+        if (rearrangedName === "Sanders, Bernie") { //bro HAD to have a nickname damn
+          rearrangedName = "Sanders, Bernard";
+        }
 
-        $('img').each((index, element) => {
-            const altText = $(element).attr('alt');
-            const src = $(element).attr('src');
+        let found = false;
+        for(let html of htmlData) {
+          if (found) break;
+          const $ = cheerio.load(html);
+          $('img').each((index, element) => {
+              if (found) return false;
+              const altText = $(element).attr('alt');
+              const src = $(element).attr('src');
 
-            if (altText && src && altText.includes(rearrangedName)) {
-              const imgFilename = src.split('/').pop();
-              console.log("FILENAME:", imgFilename);
-              console.log(`https://www.congress.gov/img/member/${imgFilename}`);
-              setImageUrl(`https://www.congress.gov/img/member/${imgFilename}`);
-            }
-        });
+              if (altText && src && altText.includes(rearrangedName)) {
+                const imgFilename = src.split('/').pop();
+                console.log("FILENAME:", imgFilename);
+                console.log(`https://www.congress.gov/img/member/${imgFilename}`);
+
+                setImageUrl(`https://www.congress.gov/img/member/${imgFilename}`);
+                found = true;
+              }
+          });
+      }
       } catch (error) {
-          console.error('Error fetching image:', error);
+          console.error('Error fetching images:', error);
       }
     };
-    fetchImage();
+    fetchImages();
   }, [senator.name]);
 
   
     return (
-    <Card sx={{ maxWidth: 345, margin: '1rem' }}>
+    <Card sx={{ maxWidth: 200, maxHeight: 500, margin: '1rem' }}>
         <CardActionArea>
         <CardMedia
               component="img"
-              height="140"
+              height="175"
               image={imgURL}
               alt={senator.name}
             />
