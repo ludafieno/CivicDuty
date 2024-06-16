@@ -15,7 +15,7 @@ export default function CongressList({ selectedIssue }) {
 
     const fetchChatGPTSenators = async (issue) => {
         const apiKey = import.meta.env.VITE_OPENAI_API_KEY;
-        const prompt = `List three US senators who work closely with ${issue} via bills and other political activities. Provide names('First Name Last Name' ONLY), and a short description (description is two sentences). ONLY output a JSON file in the format [{"name": <>, "description":<>}, etc]`;
+        const prompt = `List three US CURRENT congress members who work closely with ${issue} via bills and other political activities. Provide names('First Name Last Name' ONLY), and a short description (description is two sentences). ONLY output a JSON file in the format [{"name": <>, "description":<>}, etc]`;
  
         const response = await fetch('https://api.openai.com/v1/chat/completions', {
             method: 'POST',

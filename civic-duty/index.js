@@ -1,10 +1,11 @@
+const functions = require('firebase-functions')
 const express = require('express');
 const fs = require('fs');
 const cors = require('cors');
 const path = require('path');
+const logger = require('firebase-functions/logger');
 
 const app = express();
-const PORT = 3000;
 app.use(cors());
 
 const getFileData = (filePath) => {
@@ -37,7 +38,5 @@ app.get('/local-files', async (req, res) => {
   }
 });
 
-app.listen(PORT, () => {
-  console.log(`Server is running on http://localhost:${PORT}`);
-});
+exports.api = functions.https.onRequest(app);
 
