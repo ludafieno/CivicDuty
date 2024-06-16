@@ -37,13 +37,13 @@ export default function CongressList({ selectedIssue }) {
         }
 
         const data = await response.json();
-        console.log("Raw API response data:", data); //debug
+        // console.log("Raw API response data:", data);
         const rawText = data.choices[0].message.content;
-        console.log("Raw text:", rawText); //debug
+        // console.log("Raw text:", rawText);
 
         const validText = ensureValidJson(rawText.trim());
 
-        console.log("Valid text:", validText); //debug
+        console.log("Valid text:", validText); 
 
         const senatorsData = parseChatGPTResponse(validText);
         return senatorsData;
@@ -52,12 +52,12 @@ export default function CongressList({ selectedIssue }) {
 
 
     const ensureValidJson = (text) => {
-            // Remove any leading or trailing ```json and ``` if they exist
+            // Remove ```json and ``` at beginning
             text = text.replace(/```json/g, '').replace(/```/g, '').trim();
-            // Remove any leading or trailing ``` and extra line breaks
+            // Remove trailing ``` and extra line breaks
             text = text.replace(/```\n/g, '').replace(/\n```/g, '').trim();
 
-            // Remove any escape characters that might cause JSON.parse to fail
+            // Remove escape characters that might cause JSON.parse to fail
             text = text.replace(/\\n/g, '').replace(/\\t/g, '').trim();
 
             // Remove trailing commas before the closing bracket
@@ -78,9 +78,8 @@ export default function CongressList({ selectedIssue }) {
         try {
             const senators = JSON.parse(text);
             return senators;
-        } catch (error) { // debug
+        } catch (error) { 
             console.error("Error parsing JSON response: ", error);
-            console.log("Raw API text response:", text);
             return [];
         }
     }
