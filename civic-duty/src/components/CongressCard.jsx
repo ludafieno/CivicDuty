@@ -11,42 +11,39 @@ import * as cheerio from 'cheerio';
 export default function CongressCard({ senator }) {
   const [imgURL, setImageUrl] = useState('');
 
+  const normalizeName = (name) => {
+    name.replace(/[^a-zA-Z ]/g, "").split(' ').filter(part => part).join(' ').toLowerCase();
+    name = name.replace("Bob", "Robert");
+    name = name.replace("Tom", "Thomas");
+    name = name.replace("Bernie", "Bernard");
+    name = name.replace("Chris Murphy", "Christopher Murphy");
+
+    return name;
+  };
+
   useEffect(() => {
     const fetchImages = async () => {
       try {
-        const response = await axios.get('http://localhost:3000/local-files');
-        const { data1, data2, data3 } = response.data;
+        const response = await axios.get('/img.json');
+        const imgArray = response.data;
 
-        const htmlData = [data1, data2, data3];
-        const nameParts = senator.name.split(" ");
-        let rearrangedName = `${nameParts[1]}, ${nameParts[0]}`; //changes from First Last to Last, First
+        //Array to dictionary
+        const imgDict = imgArray.reduce((acc, item) => {
+          const [key, value] = item.split(': ');
+          acc[key] = value;
+          return acc;
+        }, {});
 
-        console.log(rearrangedName);
-        rearrangedName = rearrangedName.replace("Bob", "Robert");
-        rearrangedName = rearrangedName.replace("Tom", "Thomas");
-        rearrangedName = rearrangedName.replace("Bernie", "Bernard");
+        const normalizedSenatorName = normalizeName(senator.name);
+        console.log(normalizedSenatorName);
+        const imgFilename = Object.keys(imgDict).find(key => key.includes(normalizedSenatorName));
 
-        let found = false;
-        for(let html of htmlData) {
-          if (found) break;
-          const $ = cheerio.load(html);
-          $('img').each((index, element) => {
-              if (found) return false;
-              const altText = $(element).attr('alt');
-              const src = $(element).attr('src');
-
-              if (altText && src && altText.includes(rearrangedName)) {
-                const imgFilename = src.split('/').pop();
-                
-                console.log("Filename: ", `https://www.congress.gov/img/member/${imgFilename}`);
-
-                setImageUrl(`https://www.congress.gov/img/member/${imgFilename}`);
-                found = true;
-              }
-          });
-      }
+        if (imgFilename && imgDict[imgFilename]) {
+          setImageUrl(`https://www.congress.gov/img/member/${imgDict[imgFilename]}`);
+        }
       } catch (error) {
-          console.error('Error fetching images:', error);
+        console.error('Error fetching images:', error);
+        setImageUrl('default_placeholder_image_url_here');
       }
     };
     fetchImages();
