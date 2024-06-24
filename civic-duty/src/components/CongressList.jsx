@@ -15,7 +15,7 @@ export default function CongressList({ selectedIssue }) {
 
     const fetchChatGPTSenators = async (issue) => {
         const apiKey = import.meta.env.VITE_OPENAI_API_KEY;
-        const prompt = `List three US CURRENT congress members who work closely with ${issue} via bills and other political activities. Provide names('First Name Last Name' ONLY), and a short description (description is two sentences). ONLY output a JSON file in the format [{"name": <>, "description":<>}, etc]`;
+        const prompt = `List three (ONLY CURRENT) US congress members who work closely with ${issue} via bills and other political activities. Provide names('First Name Last Name' ONLY), and a short description (description is two sentences). ONLY output a JSON file in the format [{"name": <>, "description":<>}, etc]`;
  
         const response = await fetch('https://api.openai.com/v1/chat/completions', {
             method: 'POST',
@@ -55,7 +55,7 @@ export default function CongressList({ selectedIssue }) {
             // Remove ```json and ``` at beginning
             text = text.replace(/```json/g, '').replace(/```/g, '').trim();
             // Remove trailing ``` and extra line breaks
-            text = text.replace(/```\n/g, '').replace(/\n```/g, '').trim();
+            // text = text.replace(/```\n/g, '').replace(/\n```/g, '').trim();
 
             // Remove escape characters that might cause JSON.parse to fail
             text = text.replace(/\\n/g, '').replace(/\\t/g, '').trim();
@@ -70,6 +70,7 @@ export default function CongressList({ selectedIssue }) {
             if (!text.endsWith(']')) {
                 text = text + ']';
             }
+            text = text.replace(/("[^"\\]*(?:\\.[^"\\]*)*)"/g, '$1"');
             return text;
     };
 

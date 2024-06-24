@@ -21,7 +21,7 @@ export default function Dropdown({ selectedIssue, setSelectedIssue }) {
     }
 
     return (
-        <Box sx={{ minWidth: 120 }}>
+        <Box id="dropdown-box" sx={{ minWidth: 240, maxWidth: 240}}> 
             <FormControl fullWidth>
                 <InputLabel sx={{ color: 'white' }}>Issues</InputLabel>
                 <Select

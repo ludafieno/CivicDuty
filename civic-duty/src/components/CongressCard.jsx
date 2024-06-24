@@ -5,19 +5,25 @@ import CardMedia from '@mui/material/CardMedia';
 import Typography from '@mui/material/Typography';
 import { CardActionArea } from '@mui/material';
 import axios from 'axios';
-import * as cheerio from 'cheerio';
 
 
 export default function CongressCard({ senator }) {
   const [imgURL, setImageUrl] = useState('');
 
+  function removeMiddleInitial(name) {
+    const parts = name.split(' ');
+    const filteredParts = parts.filter(part => !(part.length === 2 && part.endsWith('.')));
+    return filteredParts.join(' ');
+}
+
   const normalizeName = (name) => {
-    name.replace(/[^a-zA-Z ]/g, "").split(' ').filter(part => part).join(' ').toLowerCase();
-    name = name.replace("Bob", "Robert");
+    name = name.replace("Bob ", "Robert ");
     name = name.replace("Tom", "Thomas");
     name = name.replace("Bernie", "Bernard");
+    name = name.replace("Ed", "Edward");
+    name = name.replace("Bobby", "Robert");
     name = name.replace("Chris Murphy", "Christopher Murphy");
-
+    name = name.replace("Chuck Schumer", "Charles Schumer");
     return name;
   };
 
@@ -30,20 +36,24 @@ export default function CongressCard({ senator }) {
         //Array to dictionary
         const imgDict = imgArray.reduce((acc, item) => {
           const [key, value] = item.split(': ');
-          acc[key] = value;
+          acc[removeMiddleInitial(key)] = value;
           return acc;
         }, {});
 
         const normalizedSenatorName = normalizeName(senator.name);
-        console.log(normalizedSenatorName);
+        console.log("state normalized name: ", normalizedSenatorName)
+
         const imgFilename = Object.keys(imgDict).find(key => key.includes(normalizedSenatorName));
+        console.log("Matched Name: ", imgFilename);
 
         if (imgFilename && imgDict[imgFilename]) {
           setImageUrl(`https://www.congress.gov/img/member/${imgDict[imgFilename]}`);
+        } else {
+          setImageUrl("/images/placeholder.jpg");
         }
       } catch (error) {
         console.error('Error fetching images:', error);
-        setImageUrl('default_placeholder_image_url_here');
+        setImageUrl('/images/placeholder.jpg');
       }
     };
     fetchImages();
