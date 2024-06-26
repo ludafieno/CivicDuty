@@ -30,6 +30,12 @@ h1 {
   unicode-bidi: isolate;
 }
 
+@media (max-width: 768px) {
+  .d-flex {
+    flex-direction: column; /* Stack items vertically */
+  }
+}
+
 .css-7m4n47 { /*card box */
   height: 500px;
   overflow: auto;
