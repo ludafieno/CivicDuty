@@ -27,7 +27,7 @@ export default function CongressList({ selectedIssue }) {
                 model: "gpt-3.5-turbo",
                 messages: [{ role: "user", content: prompt }],
                 temperature: 0.7,
-                max_tokens: 180,
+                max_tokens: 200,
                 top_p: 1,
             }),
         });
@@ -55,7 +55,6 @@ export default function CongressList({ selectedIssue }) {
             // Remove ```json and ``` at beginning
             text = text.replace(/```json/g, '').replace(/```/g, '').trim();
             // Remove trailing ``` and extra line breaks
-            // text = text.replace(/```\n/g, '').replace(/\n```/g, '').trim();
 
             // Remove escape characters that might cause JSON.parse to fail
             text = text.replace(/\\n/g, '').replace(/\\t/g, '').trim();
@@ -71,6 +70,7 @@ export default function CongressList({ selectedIssue }) {
                 text = text + ']';
             }
             text = text.replace(/("[^"\\]*(?:\\.[^"\\]*)*)"/g, '$1"');
+
             return text;
     };
 
