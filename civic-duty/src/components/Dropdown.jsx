@@ -29,15 +29,19 @@ export default function Dropdown({ selectedIssue, setSelectedIssue }) {
                         color: 'white',
                         '.MuiOutlinedInput-notchedOutline': {
                             borderColor: 'white',
+                            backgroundColor: 'white'
                         },
                         '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
                             borderColor: 'white',
+                            backgroundColor: 'white'
                         },
                         '&:hover .MuiOutlinedInput-notchedOutline': {
                             borderColor: 'white',
+                            backgroundColor: 'white'
                         },
                         '.MuiSvgIcon-root ': {
                             fill: 'white !important',
+                            backgroundColor: 'white'
                         }
                     }}
                     label="Issues"
