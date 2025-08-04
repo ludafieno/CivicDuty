@@ -23,31 +23,58 @@ export default function Dropdown({ selectedIssue, setSelectedIssue }) {
     return (
         <Box id="dropdown-box" sx={{ minWidth: 240, maxWidth: 240}}> 
             <FormControl fullWidth>
-                <InputLabel sx={{ color: 'white' }}>Issues</InputLabel>
                 <Select
                     sx={{
                         color: 'white',
+                        backgroundColor: 'rgba(255, 255, 255, 0.1)',
                         '.MuiOutlinedInput-notchedOutline': {
                             borderColor: 'white',
-                            backgroundColor: 'white'
                         },
                         '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
                             borderColor: 'white',
-                            backgroundColor: 'white'
                         },
                         '&:hover .MuiOutlinedInput-notchedOutline': {
                             borderColor: 'white',
-                            backgroundColor: 'white'
                         },
                         '.MuiSvgIcon-root ': {
                             fill: 'white !important',
-                            backgroundColor: 'white'
-                        }
+                        },
+                        '& .MuiSelect-select': {
+                            backgroundColor: 'transparent',
+                        },
+                        '& .MuiPaper-root': {
+                            backgroundColor: '#333',
+                            color: 'white',
+                        },
+                        '& .MuiMenuItem-root': {
+                            color: 'white',
+                            '&:hover': {
+                                backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                            },
+                        },
                     }}
-                    label="Issues"
                     value={selectedIssue}
                     onChange={handleChange}
+                    displayEmpty
+                    renderValue={(value) => value || "Issues"}
+                    MenuProps={{
+                        PaperProps: {
+                            sx: {
+                                backgroundColor: '#333',
+                                color: 'white',
+                                '& .MuiMenuItem-root': {
+                                    color: 'white',
+                                    '&:hover': {
+                                        backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                                    },
+                                },
+                            },
+                        },
+                    }}
                 >
+                    <MenuItem value="" disabled>
+                        Select an issue
+                    </MenuItem>
                     {issues.map((issue, index) => (
                         <MenuItem key={index} value={issue}>
                             {issue}

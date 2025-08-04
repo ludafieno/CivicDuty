@@ -1,8 +1,6 @@
-# React + Vite
+# CivicDuty
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A React-based Firebase-hosted web application that served as an about for the company, which aims to make politics more accessible by providing easy-to-understand information about government resources and congressional members. This site was the company's first iteration and meant as a demonstration for customer discovery.
 
-Currently, two official plugins are available:
+- **Congress Member Filtering**: AI-powered dropdown that filters current US congress members based on selected issues
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
